@@ -1,0 +1,14 @@
+{
+  "name": "cache",
+  "module": "index.ts",
+  "type": "module",
+  "description": "Warp in-memory cache service",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "private": true,
+  "dependencies": {
+    "ioredis": "^5.10.0",
+    "lru-cache": "^11.2.6"
+  }
+}

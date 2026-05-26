@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian: #030303;
+  --color-hyper-crimson: #FF003C;
+  --color-paper: #F5F5F5;
+  --color-carbon-light: #1A1A1A;
+  --color-carbon-dark: #0A0A0A;
+  
+  --color-background: var(--color-obsidian);
+  --color-foreground: var(--color-paper);
+  --color-card: rgba(10, 10, 10, 0.4);
+  --color-card-foreground: var(--color-paper);
+  --color-popover: #050505;
+  --color-popover-foreground: var(--color-paper);
+  --color-primary: var(--color-hyper-crimson);
+  --color-primary-foreground: var(--color-paper);
+  --color-secondary: #121212;
+  --color-secondary-foreground: var(--color-paper);
+  --color-muted: #1A1A1A;
+  --color-muted-foreground: #71717A;
+  --color-accent: #1A1A1A;
+  --color-accent-foreground: var(--color-paper);
+  --color-destructive: #7F1D1D;
+  --color-destructive-foreground: var(--color-paper);
+  --color-border: rgba(255, 255, 255, 0.03);
+  --color-input: rgba(255, 255, 255, 0.05);
+  --color-ring: var(--color-hyper-crimson);
+  
+  --font-brutal: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  
+  --ease-expo-in: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  --ease-expo-out: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-brutal: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-obsidian);
+    color: var(--color-paper);
+    overflow-x: hidden;
+    font-family: var(--font-brutal);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Fix Autofill styling for dark tactical theme */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px #0c0c0c inset !important;
+      -webkit-text-fill-color: white !important;
+      transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+@layer utilities {
+  .text-mask-reveal {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  
+  .bg-void {
+    background: radial-gradient(circle at center, #111 0%, #030303 100%);
+  }
+
+  .glass-brutal {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .border-crimson {
+    border-color: var(--color-hyper-crimson);
+  }
+
+  .shadow-crimson-glow {
+    box-shadow: 0 0 30px rgba(255, 0, 60, 0.2);
+  }
+
+  .text-outline {
+    -webkit-text-stroke: 1.5px rgba(245, 245, 245, 1.0);
+    color: transparent;
+  }
+}
+
+/* Custom Scrollbar for the Sanctuary */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-obsidian);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-carbon-light);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-hyper-crimson);
+}

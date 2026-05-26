@@ -1,0 +1,10 @@
+{
+  "model": "groq/llama-3.3-70b-versatile",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Confirm you are the Llama 3 model running on Groq."
+    }
+  ],
+  "stream": false
+}
