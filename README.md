@@ -14,42 +14,42 @@ Warp is an enterprise-grade, high-performance, multi-provider LLM gateway and da
 
 ### 1. Landing Page
 A dark-themed, premium entry point built with custom CSS animations and glassmorphism.
-![Landing Page](<src="Screenshots/chat.png" />)
+![Landing Page](./Screenshots/landing%20page.png)
 *Home Page featuring direct API request code snippets.*
 
 ---
 
 ### 2. Secure Console Access
 Multi-tenant registration and authentication routing with direct validation.
-![Console Login](<img width="3022" height="1408" alt="login" src="https://github.com/user-attachments/assets/96148c5f-5787-4626-8835-093c06b4e973" />)
+![Console Login](./Screenshots/login.png)
 *Authentication Console with secure JWT validation.*
 
 ---
 
 ### 3. Neural Hub (Main Dashboard)
 A comprehensive control panel showcasing API key volumes, spent funds, and model status at a glance.
-![Main Dashboard](<img width="1919" height="904" alt="dashboard" src="https://github.com/user-attachments/assets/b8a25218-6234-4843-8e5d-577c4cbd4c9d" />)
+![Main Dashboard](./Screenshots/dashboard.png)
 *Neural Hub landing displaying keys status, funds consumed, and active systems.*
 
 ---
 
 ### 4. Developer API Key Manager
 Create, rotate, enable/disable, and track token consumption limits per key.
-![API Keys](<img width="1919" height="906" alt="access key" src="https://github.com/user-attachments/assets/365d847e-40f7-4abf-ae41-f31c4f93b003" />)
+![API Keys](./Screenshots/access%20key.png)
 *Sleek list view of developer keys and cumulative credit usage.*
 
 ---
 
 ### 5. Telemetry & Latency Analytics
 Dynamic charting and statistical breakdown of request counts, response latency, and cost telemetry.
-![Telemetry Analytics](<img width="1919" height="899" alt="analytics" src="https://github.com/user-attachments/assets/31571681-6a00-4a55-af87-1e18d59796d7" />)
+![Telemetry Analytics](./Screenshots/analytics.png)
 *Token throughput, costs, and P95 latency tracking dashboard.*
 
 ---
 
 ### 6. Interactive Chat Playground
 Test different models live with streaming Server-Sent Events (SSE) directly inside the console.
-![Chat Playground](<img width="1919" height="893" alt="chat" src="https://github.com/user-attachments/assets/196dd853-2ae5-4c5a-b069-4a27a84e4ce1" />)
+![Chat Playground](./Screenshots/chat.png)
 *Chat playground interface displaying real-time streaming output from Llama models.*
 
 ---
