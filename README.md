@@ -14,7 +14,7 @@ Warp is an enterprise-grade, high-performance, multi-provider LLM gateway and da
 
 ### 1. Landing Page
 A dark-themed, premium entry point built with custom CSS animations and glassmorphism.
-![Landing Page](<src="https://github.com/user-attachments/assets/154ecdfd-b429-441b-b68b-4e514c638431" />)
+![Landing Page](<src="Screenshots/chat.png" />)
 *Home Page featuring direct API request code snippets.*
 
 ---
