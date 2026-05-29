@@ -1,0 +1,10 @@
+node_modules
+.git
+.bun
+.next
+dist
+build
+.env
+packages/*/node_modules
+apps/*/node_modules
+apps/*/.next
