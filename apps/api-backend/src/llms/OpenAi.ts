@@ -3,7 +3,7 @@ import { BaseLlm, FinishReason, LlmResponse, LlmStreamResult, ProviderError } fr
 import OpenAI from "openai";
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY || "missing"
 });
 
 /**

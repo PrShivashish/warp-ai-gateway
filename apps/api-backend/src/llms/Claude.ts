@@ -4,7 +4,7 @@ import { BaseLlm, FinishReason, LlmResponse, LlmStreamResult, ProviderError } fr
 import { TextBlock } from "@anthropic-ai/sdk/resources";
 
 const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
+  apiKey: process.env.ANTHROPIC_API_KEY || "missing"
 });
 
 /**
