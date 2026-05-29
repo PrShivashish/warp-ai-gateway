@@ -7,7 +7,7 @@ export const app = new Elysia({ prefix: "/auth" })
   .use(
     jwt({
       name: 'jwt',
-      secret: process.env.JWT_SECRET!
+      secret: process.env.JWT_SECRET || "fallback_secret_for_warp_gateway",
     })
   )
   .post("/sign-up", async ({ body, status }) => {
