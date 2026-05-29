@@ -47,7 +47,8 @@ export abstract class ModelsService {
             // 2. OR it has a provider mapping where the provider has a configured API key
             const isAvailable = model.modelProviderMappings.some(mapping => {
                 const isFree = mapping.inputTokenCost === 0 && mapping.outputTokenCost === 0;
-                const hasKey = isProviderAvailable(mapping.provider.name);
+                const hasKey = isProviderAvailable(mapping.provider.name) ||
+                    (mapping.provider.name === "Warp Native" && isProviderAvailable(model.company.name));
                 return isFree || hasKey;
             });
 

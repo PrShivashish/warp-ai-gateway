@@ -9,11 +9,15 @@ import {
 } from "@/components/ui/select";
 import { Send, Loader2, Bot, User, AlertCircle, MessageSquare, History, Plus, Trash2 } from "lucide-react";
 
-const API_BASE = "http://localhost:4000";
-const BACKEND_BASE = "http://localhost:3000";
+import { GATEWAY_API_URL, PRIMARY_API_URL } from "../lib/env";
+
+
+const API_BASE = GATEWAY_API_URL;
+const BACKEND_BASE = PRIMARY_API_URL;
+
 
 type Message = {
-    role: "user" | "assistant";
+    role: "user" | "assistant" | "system";
     content: string;
 };
 
@@ -38,14 +42,14 @@ async function streamChat(
 ) {
     const res = await fetch(`${API_BASE}/v1/chat/completions`, {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ 
-            model, 
-            messages: messages.map(m => ({ role: m.role, content: m.content })), 
+        body: JSON.stringify({
+            model,
+            messages: messages.map(m => ({ role: m.role, content: m.content })),
             stream: true,
             ...(conversationId ? { conversation_id: conversationId } : {})
         }),
@@ -113,6 +117,7 @@ export function Chat() {
     const [conversations, setConversations] = useState<any[]>([]);
     const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
     const [historyLoading, setHistoryLoading] = useState(false);
+    const [summary, setSummary] = useState<any>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -126,10 +131,10 @@ export function Chat() {
                     "groq/llama-3.3-70b-versatile"
                 ];
                 // Filter only known working models
-                const allModels = (data.models ?? []).filter((m: any) => 
+                const allModels = (data.models ?? []).filter((m: any) =>
                     functionalSlugs.includes(m.slug)
                 );
-                
+
                 setModels(allModels);
                 // Auto-select first available model
                 if (allModels.length > 0 && !selectedModel) {
@@ -140,7 +145,7 @@ export function Chat() {
             .finally(() => setModelsLoading(false));
     }, []);
 
-    // Fetch API key
+    // Fetch API key & metrics summary
     useEffect(() => {
         fetch(`${BACKEND_BASE}/api-keys`, { credentials: "include" })
             .then((r) => r.json())
@@ -149,7 +154,12 @@ export function Chat() {
                 const active = keys.find((k: any) => !k.disabled && !k.deleted);
                 if (active) setApiKey(active.apiKey);
             })
-            .catch(() => {});
+            .catch(() => { });
+
+        fetch(`${BACKEND_BASE}/metrics/summary`, { credentials: "include" })
+            .then((r) => r.json())
+            .then((data) => setSummary(data))
+            .catch(() => { });
     }, []);
 
     // Fetch history
@@ -158,7 +168,7 @@ export function Chat() {
         fetch(`${BACKEND_BASE}/conversations`, { credentials: "include" })
             .then(r => r.json())
             .then(data => setConversations(data))
-            .catch(() => {})
+            .catch(() => { })
             .finally(() => setHistoryLoading(false));
     }, []);
 
@@ -222,12 +232,36 @@ export function Chat() {
         setIsSending(true);
         setStreamingContent("");
 
+        const systemMsg: Message = {
+            role: "system",
+            content: `You are the Warp AI Gateway Assistant. You help users navigate the Warp platform.
+The user is currently logged in. Here are their live platform metrics:
+- Average API Latency: ${summary?.avgLatencyMs ? `${Math.round(summary.avgLatencyMs)}ms` : "No requests recorded yet (typical latency is ~250ms)"}
+- Total Requests Processed: ${summary?.totalRequests ?? 0}
+- Total Tokens Consumed: ${summary?.totalTokens ?? 0}
+- Wallet Credits Consumed: $${summary?.totalCost ? Number(summary.totalCost).toFixed(6) : "0.000000"}
+
+Under the hood, Warp AI Gateway features:
+- Low latency streaming routes.
+- Deterministic cheapest-first provider routing.
+- Circuit breaker / failover support.
+- Custom rate limiting (RPM/TPM limits).
+
+Supported models are:
+1. Google Gemini 2.0 Flash (slug: google/gemini-2.0-flash)
+2. Groq Llama 3.3 70B (slug: groq/llama-3.3-70b-versatile)
+
+If the user asks about API speeds, latencies, or their stats, refer directly to these exact numbers and explain that the Warp Gateway tracks and records these metrics automatically in real-time. Keep responses clear, concise, and helpful.`
+        };
+
+        const apiMessages = [systemMsg, ...updatedMessages];
+
         let accumulated = "";
         try {
             await streamChat(
                 apiKey,
                 selectedModel,
-                updatedMessages,
+                apiMessages,
                 (token) => {
                     setIsSending(true);
                     setStreamingContent((prev) => prev + token);
@@ -263,7 +297,7 @@ export function Chat() {
             setStreamingContent("");
             setIsSending(false);
         }
-    }, [input, isSending, selectedModel, apiKey, messages]);
+    }, [input, isSending, selectedModel, apiKey, messages, summary, fetchHistory, currentConversationId]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -318,101 +352,101 @@ export function Chat() {
                     </div>
                 </div>
 
-                    {/* Messages */}
-                    <div className="flex-1 overflow-y-auto py-6 space-y-4 min-h-0">
-                        {messages.length === 0 && !isSending && (
-                            <div className="flex flex-col items-center justify-center h-full text-center">
-                                <div className="flex items-center justify-center size-16 rounded-2xl bg-primary/5 border border-primary/10 mb-4">
-                                    <Bot className="size-7 text-primary/60" />
-                                </div>
-                                <h3 className="text-lg font-semibold text-foreground/80">
-                                    Start a conversation
-                                </h3>
-                                <p className="text-muted-foreground text-sm mt-1 max-w-sm">
-                                    Select a model and type a message below to begin.
-                                </p>
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto py-6 space-y-4 min-h-0">
+                    {messages.length === 0 && !isSending && (
+                        <div className="flex flex-col items-center justify-center h-full text-center">
+                            <div className="flex items-center justify-center size-16 rounded-2xl bg-primary/5 border border-primary/10 mb-4">
+                                <Bot className="size-7 text-primary/60" />
                             </div>
-                        )}
-
-                        {messages.map((msg, i) => (
-                            <MessageBubble key={i} message={msg} />
-                        ))}
-
-                        {/* Streaming assistant message */}
-                        {isSending && streamingContent && (
-                            <MessageBubble
-                                message={{ role: "assistant", content: streamingContent }}
-                                isStreaming
-                            />
-                        )}
-
-                        {/* Typing indicator */}
-                        {isSending && !streamingContent && (
-                            <div className="flex items-start gap-3">
-                                <div className="flex items-center justify-center size-8 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
-                                    <Bot className="size-4 text-primary" />
-                                </div>
-                                <div className="bg-card/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-3">
-                                    <div className="flex items-center gap-1.5">
-                                        <div className="size-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:0ms]" />
-                                        <div className="size-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:150ms]" />
-                                        <div className="size-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:300ms]" />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        <div ref={messagesEndRef} />
-                    </div>
-
-                    {/* Error toast */}
-                    {error && (
-                        <div className="flex items-center gap-2 px-4 py-2.5 mb-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                            <AlertCircle className="size-4 shrink-0" />
-                            {error}
+                            <h3 className="text-lg font-semibold text-foreground/80">
+                                Start a conversation
+                            </h3>
+                            <p className="text-muted-foreground text-sm mt-1 max-w-sm">
+                                Select a model and type a message below to begin.
+                            </p>
                         </div>
                     )}
 
-                    {/* Input */}
-                    <div className="border-t border-border/50 pt-4 pb-2">
-                        <div className="flex items-end gap-3">
-                            <div className="flex-1 relative">
-                                <textarea
-                                    ref={inputRef}
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    disabled={isSending}
-                                    placeholder={
-                                        isSending
-                                            ? "Waiting for response..."
-                                            : "Type a message... (Enter to send)"
-                                    }
-                                    rows={1}
-                                    className="w-full resize-none rounded-xl border border-border/50 bg-card/30 px-4 py-3 pr-12 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-white"
-                                    style={{ minHeight: "48px", maxHeight: "120px" }}
-                                    onInput={(e) => {
-                                        const t = e.target as HTMLTextAreaElement;
-                                        t.style.height = "auto";
-                                        t.style.height = Math.min(t.scrollHeight, 120) + "px";
-                                    }}
-                                />
+                    {messages.map((msg, i) => (
+                        <MessageBubble key={i} message={msg} />
+                    ))}
+
+                    {/* Streaming assistant message */}
+                    {isSending && streamingContent && (
+                        <MessageBubble
+                            message={{ role: "assistant", content: streamingContent }}
+                            isStreaming
+                        />
+                    )}
+
+                    {/* Typing indicator */}
+                    {isSending && !streamingContent && (
+                        <div className="flex items-start gap-3">
+                            <div className="flex items-center justify-center size-8 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
+                                <Bot className="size-4 text-primary" />
                             </div>
-                            <button
-                                onClick={handleSend}
-                                disabled={isSending || !input.trim() || !selectedModel}
-                                className="flex items-center justify-center size-12 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
-                            >
-                                {isSending ? (
-                                    <Loader2 className="size-4 animate-spin" />
-                                ) : (
-                                    <Send className="size-4" />
-                                )}
-                            </button>
+                            <div className="bg-card/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-3">
+                                <div className="flex items-center gap-1.5">
+                                    <div className="size-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:0ms]" />
+                                    <div className="size-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:150ms]" />
+                                    <div className="size-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:300ms]" />
+                                </div>
+                            </div>
                         </div>
+                    )}
+
+                    <div ref={messagesEndRef} />
+                </div>
+
+                {/* Error toast */}
+                {error && (
+                    <div className="flex items-center gap-2 px-4 py-2.5 mb-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                        <AlertCircle className="size-4 shrink-0" />
+                        {error}
+                    </div>
+                )}
+
+                {/* Input */}
+                <div className="border-t border-border/50 pt-4 pb-2">
+                    <div className="flex items-end gap-3">
+                        <div className="flex-1 relative">
+                            <textarea
+                                ref={inputRef}
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                disabled={isSending}
+                                placeholder={
+                                    isSending
+                                        ? "Waiting for response..."
+                                        : "Type a message... (Enter to send)"
+                                }
+                                rows={1}
+                                className="w-full resize-none rounded-xl border border-border/50 bg-card/30 px-4 py-3 pr-12 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-white"
+                                style={{ minHeight: "48px", maxHeight: "120px" }}
+                                onInput={(e) => {
+                                    const t = e.target as HTMLTextAreaElement;
+                                    t.style.height = "auto";
+                                    t.style.height = Math.min(t.scrollHeight, 120) + "px";
+                                }}
+                            />
+                        </div>
+                        <button
+                            onClick={handleSend}
+                            disabled={isSending || !input.trim() || !selectedModel}
+                            className="flex items-center justify-center size-12 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
+                        >
+                            {isSending ? (
+                                <Loader2 className="size-4 animate-spin" />
+                            ) : (
+                                <Send className="size-4" />
+                            )}
+                        </button>
                     </div>
                 </div>
-            </DashboardLayout>
+            </div>
+        </DashboardLayout>
     );
 }
 
@@ -430,11 +464,10 @@ function MessageBubble({
     return (
         <div className={`flex items-start gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
             <div
-                className={`flex items-center justify-center size-8 rounded-lg border shrink-0 ${
-                    isUser
+                className={`flex items-center justify-center size-8 rounded-lg border shrink-0 ${isUser
                         ? "bg-accent/50 border-border/30"
                         : "bg-primary/10 border-primary/20"
-                }`}
+                    }`}
             >
                 {isUser ? (
                     <User className="size-4 text-muted-foreground" />
@@ -443,11 +476,10 @@ function MessageBubble({
                 )}
             </div>
             <div
-                className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap wrap-break-word ${
-                    isUser
+                className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap wrap-break-word ${isUser
                         ? "bg-primary text-primary-foreground rounded-tr-sm"
                         : "bg-card/60 border border-border/40 text-foreground rounded-tl-sm"
-                }`}
+                    }`}
             >
                 {message.content}
                 {isStreaming && (

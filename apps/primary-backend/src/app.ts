@@ -10,9 +10,21 @@ import { conversationApp } from "./modules/conversations";
 
 export const app = new Elysia()
   .use(cors({
-    origin: [/localhost:3001/, /localhost:3002/],
+    // In production: set FRONTEND_ORIGIN=https://your-app.vercel.app
+    // In development: localhost:3001 / localhost:3002 are automatically allowed
+    origin: (request) => {
+      const origin = request.headers.get('origin') || '';
+      const prodOrigin = process.env.FRONTEND_ORIGIN;
+      if (prodOrigin && origin === prodOrigin) return true;
+      // Allow any localhost origin during development
+      if (/^https?:\/\/localhost:\d+$/.test(origin)) return true;
+      // Allow Vercel preview deployments (*.vercel.app)
+      if (/\.vercel\.app$/.test(origin)) return true;
+      return false;
+    },
     credentials: true
   }))
+
   .get("/", () => ({
     status: "Warp Primary Backend is running",
     version: "1.0.0",

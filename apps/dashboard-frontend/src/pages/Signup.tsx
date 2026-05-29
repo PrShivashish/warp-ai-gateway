@@ -13,7 +13,9 @@ import {
 import { ArrowRight, Mail, Lock, Loader2, Zap, BookOpen, ShieldCheck, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const DOCS_URL = "http://localhost:3002";
+import { DOCS_URL } from "../lib/env";
+
+
 
 export function Signup() {
     const emailRef = useRef<HTMLInputElement>(null);
@@ -47,18 +49,18 @@ export function Signup() {
     return (
         <div className="dark h-screen w-screen relative flex items-center justify-center bg-[#010101] overflow-hidden p-2 font-sans no-scrollbar">
             {/* Background Layer 1: Dot Grid Pattern */}
-            <div 
-                className="absolute inset-0 opacity-[0.2] z-0 pointer-events-none" 
-                style={{ 
+            <div
+                className="absolute inset-0 opacity-[0.2] z-0 pointer-events-none"
+                style={{
                     backgroundImage: `radial-gradient(#ffffff 0.8px, transparent 0.8px)`,
                     backgroundSize: '30px 30px'
-                }} 
+                }}
             />
 
             {/* Background Layer 2: Neon Orbital Atmospheric Glow Engine */}
             <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
                 <motion.div
-                    animate={{ 
+                    animate={{
                         x: ["-25vw", "5vw", "25vw", "5vw", "-25vw"],
                         y: ["-20vh", "20vh", "5vh", "-20vh", "-20vh"],
                         opacity: [0.5, 0.75, 0.55, 0.75, 0.5],
@@ -67,9 +69,9 @@ export function Signup() {
                     transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] bg-[radial-gradient(circle_at_50%_50%,_rgba(0,136,255,0.6)_0%,_transparent_75%)] blur-[160px] mix-blend-screen"
                 />
-                
+
                 <motion.div
-                    animate={{ 
+                    animate={{
                         x: ["25vw", "-5vw", "-25vw", "-5vw", "25vw"],
                         y: ["20vh", "-20vh", "-5vh", "20vh", "20vh"],
                         opacity: [0.5, 0.75, 0.55, 0.75, 0.5],
@@ -81,7 +83,7 @@ export function Signup() {
             </div>
 
             {/* Main Content Container - Zoomed out to 0.85 for perfect framing */}
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 15 }}
                 animate={{ opacity: 1, scale: 0.85, y: 0 }}
                 transition={{ duration: 1.2, ease: [0.165, 0.84, 0.44, 1] }}
@@ -98,9 +100,9 @@ export function Signup() {
                     <div className="flex items-center gap-2">
                         <span className="text-xl font-medium tracking-tight text-white mb-0.5">Warp</span>
                     </div>
-                    <a 
-                        href={DOCS_URL} 
-                        target="_blank" 
+                    <a
+                        href={DOCS_URL}
+                        target="_blank"
                         className="flex items-center gap-1.5 text-[9px] font-mono tracking-widest text-white/40 hover:text-white/80 transition-all scale-95"
                     >
                         <BookOpen className="size-3" /> architecture <ExternalLink className="size-2 opacity-50" />
@@ -173,7 +175,7 @@ export function Signup() {
 
                     <CardFooter className="px-10 pb-12 pt-0 flex flex-col items-center relative z-30">
                         <p className="text-[11px] font-bold tracking-tighter text-white/30 flex items-center gap-1.5 uppercase letter-spacing-[0.05em]">
-                            Already established? 
+                            Already established?
                             <Link to="/signin" className="text-white hover:text-[#ff003c] transition-all underline underline-offset-4 decoration-white/20 hover:decoration-[#ff003c]/50 font-bold">Sign in</Link>
                         </p>
                     </CardFooter>

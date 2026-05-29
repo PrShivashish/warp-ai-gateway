@@ -36,13 +36,15 @@ const item = {
     }
 };
 
-const API_BASE = "http://localhost:3000";
+import { PRIMARY_API_URL } from "../lib/env";
+
 
 async function fetchMetrics(path: string) {
-    const res = await fetch(`${API_BASE}${path}`, { credentials: "include" });
+    const res = await fetch(`${PRIMARY_API_URL}${path}`, { credentials: "include" });
     if (!res.ok) throw new Error(`Failed to fetch ${path}`);
     return res.json();
 }
+
 
 // ── Skeleton Loader ──────────────────────────────────────────────────
 

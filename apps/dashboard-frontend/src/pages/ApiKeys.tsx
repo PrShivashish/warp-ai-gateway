@@ -171,6 +171,10 @@ export function ApiKeys() {
                                 </div>
                                 <Button
                                     type="submit"
+                                    onClick={() => {
+                                        const name = nameRef.current?.value?.trim();
+                                        if (name) createMutation.mutate(name);
+                                    }}
                                     className="h-12 px-8 bg-white text-black hover:bg-white/90 font-black uppercase tracking-tighter italic"
                                     disabled={createMutation.isPending}
                                 >

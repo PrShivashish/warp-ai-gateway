@@ -14,18 +14,23 @@ import { Chat } from "./pages/Chat";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ElysiaClientContextProvider } from "./providers/Eden";
 import { treaty } from "@elysiajs/eden";
+import { PRIMARY_API_URL } from "./lib/env";
 
-const client = treaty<App>('localhost:3000', {
+
+
+const host = PRIMARY_API_URL.replace(/^https?:\/\//, '');
+const client = treaty<App>(host, {
   fetch: {
     credentials: 'include'
   }
 });
 
+
 const queryClient = new QueryClient()
 
 function AnimatedRoutes() {
   const location = useLocation();
-  
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -37,15 +42,15 @@ function AnimatedRoutes() {
         className="min-h-screen"
       >
         <Routes location={location} key={location.pathname}>
-          <Route path={"/"} element={<Landing />} /> 
-          <Route path={"/signup"} element={<Signup />} /> 
-          <Route path={"/signin"} element={<Signin />} /> 
-          <Route path={"/dashboard"} element={<Dashboard />} /> 
-          <Route path={"/wallet"} element={<Credits />} /> 
+          <Route path={"/"} element={<Landing />} />
+          <Route path={"/signup"} element={<Signup />} />
+          <Route path={"/signin"} element={<Signin />} />
+          <Route path={"/dashboard"} element={<Dashboard />} />
+          <Route path={"/wallet"} element={<Credits />} />
           <Route path={"/api-keys"} element={<ApiKeys />} />
           <Route path={"/metrics"} element={<Metrics />} />
           <Route path={"/dashboard/provider-health"} element={<ProviderHealth />} />
-          <Route path={"/chat"} element={<Chat />} /> 
+          <Route path={"/chat"} element={<Chat />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
@@ -57,9 +62,9 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ElysiaClientContextProvider value={client}>
-          <BrowserRouter>
-            <AnimatedRoutes />
-          </BrowserRouter>
+        <BrowserRouter>
+          <AnimatedRoutes />
+        </BrowserRouter>
       </ElysiaClientContextProvider>
     </QueryClientProvider>
   );

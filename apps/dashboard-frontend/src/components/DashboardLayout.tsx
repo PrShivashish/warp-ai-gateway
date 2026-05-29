@@ -16,7 +16,9 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingOverlay } from "./LoadingOverlay";
 
-const DOCS_URL = "http://localhost:3002";
+import { DOCS_URL } from "../lib/env";
+
+
 
 const navItems = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },

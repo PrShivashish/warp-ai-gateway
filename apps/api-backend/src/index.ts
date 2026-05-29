@@ -544,9 +544,17 @@ const app = new Elysia()
   })
 
   .use(cors({
-    origin: process.env.FRONTEND_ORIGIN ?? "http://localhost:3001",
+    origin: (request) => {
+      const origin = request.headers.get('origin') || '';
+      const prodOrigin = process.env.FRONTEND_ORIGIN;
+      if (prodOrigin && origin === prodOrigin) return true;
+      if (/^https?:\/\/localhost:\d+$/.test(origin)) return true;
+      if (/\.vercel\.app$/.test(origin)) return true;
+      return false;
+    },
     credentials: true,
   }))
+
   .use(bearer())
   .use(openapi())
   .get("/", () => ({
