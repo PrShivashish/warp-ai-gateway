@@ -5,7 +5,7 @@
 #   /v1/*  → api-gateway     (port 4000)   LLM proxy
 # ───────────────────────────────────────────────────────────────
 
-FROM oven/bun:1.1-debian AS base
+FROM oven/bun:1-debian AS base
 
 # --- System dependencies -------------------------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
