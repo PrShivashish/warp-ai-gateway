@@ -7,7 +7,7 @@ export const app = new Elysia({ prefix: "payments" })
     .use(
         jwt({
             name: 'jwt',
-            secret: process.env.JWT_SECRET!
+            secret: process.env.JWT_SECRET || "fallback_secret_for_warp_gateway"
         })
     )
     .resolve(async ({ cookie: { auth }, status, jwt }) => {
