@@ -5,7 +5,7 @@ import { Scroll } from '@react-three/drei';
 import { Terminal, ArrowUpRight } from 'lucide-react';
 
 import { Sanctuary } from '../components/3D/Sanctuary';
-import { IntelligenceReadout } from '../components/UI/IntelligenceReadout';
+import { IntelligenceReadout } from '../components/ui/IntelligenceReadout';
 import { CodeTerminal } from '../components/ui/CodeTerminal';
 
 const easeBrutal = [0.76, 0, 0.24, 1];
