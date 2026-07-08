@@ -22,42 +22,42 @@ Warp is an enterprise-grade, high-performance, multi-provider LLM gateway and da
 
 ### 1. Landing Page
 A dark-themed, premium entry point built with custom CSS animations and glassmorphism.
-![Landing Page](./screenshots/landing%20page.png)
+![Landing Page](./Screenshots/landing%20page.png)
 *Home Page featuring direct API request code snippets.*
 
 ---
 
 ### 2. Secure Console Access
 Multi-tenant registration and authentication routing with direct validation.
-![Console Login](./screenshots/login.png)
+![Console Login](./Screenshots/login.png)
 *Authentication Console with secure JWT validation.*
 
 ---
 
 ### 3. Neural Hub (Main Dashboard)
 A comprehensive control panel showcasing API key volumes, spent funds, and model status at a glance.
-![Main Dashboard](./screenshots/dashboard.png)
+![Main Dashboard](./Screenshots/dashboard.png)
 *Neural Hub landing displaying keys status, funds consumed, and active systems.*
 
 ---
 
 ### 4. Developer API Key Manager
 Create, rotate, enable/disable, and track token consumption limits per key.
-![API Keys](./screenshots/access%20key.png)
+![API Keys](./Screenshots/access%20key.png)
 *Sleek list view of developer keys and cumulative credit usage.*
 
 ---
 
 ### 5. Telemetry & Latency Analytics
 Dynamic charting and statistical breakdown of request counts, response latency, and cost telemetry.
-![Telemetry Analytics](./screenshots/analytics.png)
+![Telemetry Analytics](./Screenshots/analytics.png)
 *Token throughput, costs, and P95 latency tracking dashboard.*
 
 ---
 
 ### 6. Interactive Chat Playground
 Test different models live with streaming Server-Sent Events (SSE) directly inside the console.
-![Chat Playground](./screenshots/chat.png)
+![Chat Playground](./Screenshots/chat.png)
 *Chat playground interface displaying real-time streaming output from Llama models.*
 
 ---
